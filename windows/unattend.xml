@@ -1,6 +1,6 @@
 <Options>
     <Option Name="InstallAllUsers" Value="0" />
-    <Option Name="TargetDir" Value="C:\python314-dist" />
+    <Option Name="TargetDir" Value="C:\hostedtoolcache\windows\Python\3.14.0\x64" />
     <Option Name="AssociateFiles" Value="0" />
     <Option Name="CompileAll" Value="0" />
     <Option Name="PrependPath" Value="0" />
