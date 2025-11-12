@@ -51,7 +51,7 @@ The workflow is triggered by:
 ```yaml
 PYTHON_VERSION: 3.14.0
 PYTHON_VERSION_SHORT: 3.14
-PYTHON_DIST_RELEASE: 20250205
+PYTHON_DIST_RELEASE: 20251007
 ```
 
 ## Key Differences from AppVeyor

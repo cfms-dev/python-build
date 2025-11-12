@@ -7,7 +7,7 @@ mkdir -p $PYTHON_ARCH/build
 tar zxvf $DIST_FILE -C $PYTHON_ARCH/build
 
 # compile lib
-python -m compileall -b $PYTHON_ARCH/build/python/lib/python3.12
+python -m compileall -b $PYTHON_ARCH/build/python/lib/python3.14
 
 # copy build to dist
 mkdir -p $PYTHON_ARCH/dist
