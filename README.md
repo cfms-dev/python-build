@@ -5,7 +5,7 @@ Building Python for Android, iOS, macOS, Linux, and Windows
 ## Overview
 
 This repository contains build scripts and GitHub Actions workflows for building Python 3.14 for multiple platforms:
-- **Android**: All ABIs (arm64-v8a, armeabi-v7a, x86_64, x86)
+- **Android**: All ABIs (arm64-v8a, x86_64)
 - **Darwin**: iOS and macOS
 - **Linux**: x86_64 and aarch64
 - **Windows**: amd64
