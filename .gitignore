@@ -1,0 +1,28 @@
+# Binaries and executables
+actionlint
+
+# Build artifacts
+*.tar.gz
+*.zip
+dist/
+build/
+install/
+support/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
