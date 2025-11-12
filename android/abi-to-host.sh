@@ -1,14 +1,14 @@
 case ${abi:?} in
-    armeabi-v7a)
-        # HOST=arm-linux-androideabi
-        HOST=aarch64-linux-android
-        ;;
+    # armeabi-v7a)
+    #     # HOST=arm-linux-androideabi
+    #     HOST=aarch64-linux-android
+    #     ;;
     arm64-v8a)
         HOST=aarch64-linux-android
         ;;
-    x86)
-        HOST=i686-linux-android
-        ;;
+    # x86)
+    #     HOST=i686-linux-android
+    #     ;;
     x86_64)
         HOST=x86_64-linux-android
         ;;
