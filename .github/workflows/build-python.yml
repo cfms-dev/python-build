@@ -2,9 +2,11 @@ name: Build Python for Multiple Platforms
 
 on:
   push:
-    branches:
-      - 'python-3.*'
-      - 'main'
+    # branches:
+    #   - 'python-3.*'
+    #   - 'main'
+    tags:
+      - "v*.*"
   pull_request:
     branches:
       - 'python-3.*'
