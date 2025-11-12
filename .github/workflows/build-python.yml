@@ -1,0 +1,260 @@
+name: Build Python for Multiple Platforms
+
+on:
+  push:
+    branches:
+      - 'python-3.*'
+      - 'main'
+  pull_request:
+    branches:
+      - 'python-3.*'
+      - 'main'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: 3.14.0
+  PYTHON_VERSION_SHORT: 3.14
+  PYTHON_DIST_RELEASE: 20250205
+
+jobs:
+  # ======================================
+  #      Build Python for Android
+  # ======================================
+  build-android:
+    name: Build Python for Android
+    runs-on: ubuntu-latest
+    env:
+      NDK_VERSION: r27
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify Python version
+        run: python --version
+
+      - name: Build all Python ABIs
+        run: |
+          cd android
+          ./build-all.sh ${{ env.PYTHON_VERSION }}
+
+      - name: Package support package for mobile-forge
+        run: |
+          cd android
+          mkdir -p dist
+          tar -czf dist/python-android-mobile-forge-${{ env.PYTHON_VERSION_SHORT }}.tar.gz install support
+
+      - name: Package individual ABIs for Flutter
+        run: |
+          cd android
+          ./package-for-dart.sh install ${{ env.PYTHON_VERSION }} arm64-v8a
+          ./package-for-dart.sh install ${{ env.PYTHON_VERSION }} armeabi-v7a
+          ./package-for-dart.sh install ${{ env.PYTHON_VERSION }} x86_64
+
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-android
+          path: android/dist/python-android-*.tar.gz
+          if-no-files-found: error
+
+      - name: Deploy to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: android/dist/python-android-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ======================================
+  #      Build Python for iOS and macOS
+  # ======================================
+  build-darwin:
+    name: Build Python for iOS and macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify Python version
+        run: python --version
+
+      - name: Clone Python-Apple-support
+        run: |
+          cd darwin
+          git clone --branch=${{ env.PYTHON_VERSION_SHORT }} https://github.com/beeware/Python-Apple-support.git
+          mkdir -p dist
+
+      - name: Build Python for iOS
+        run: |
+          cd darwin/Python-Apple-support
+          make iOS
+
+      - name: Package iOS for mobile-forge
+        run: |
+          cd darwin
+          tar -czf dist/python-ios-mobile-forge-${{ env.PYTHON_VERSION_SHORT }}.tar.gz \
+            -C Python-Apple-support install support
+
+      - name: Build Python for macOS
+        run: |
+          cd darwin/Python-Apple-support
+          make macOS
+
+      - name: Package for Dart - iOS
+        run: |
+          cd darwin
+          ./package-ios-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION_SHORT }}
+
+      - name: Package for Dart - macOS
+        run: |
+          cd darwin
+          ./package-macos-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION_SHORT }}
+
+      - name: Upload Darwin artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-darwin
+          path: darwin/dist/python-*.tar.gz
+          if-no-files-found: error
+
+      - name: Deploy to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: darwin/dist/python-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ======================================
+  #      Build Python for Linux
+  # ======================================
+  build-linux:
+    name: Build Python for Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify Python version
+        run: python --version
+
+      - name: Install rsync
+        run: sudo apt-get update && sudo apt-get install -y rsync
+
+      - name: Build Python for Linux x86_64
+        run: |
+          cd linux
+          ./package-for-linux.sh x86_64 "_v2"
+        env:
+          PYTHON_VERSION: ${{ env.PYTHON_VERSION }}
+          PYTHON_VERSION_SHORT: ${{ env.PYTHON_VERSION_SHORT }}
+          PYTHON_DIST_RELEASE: ${{ env.PYTHON_DIST_RELEASE }}
+
+      - name: Build Python for Linux aarch64
+        run: |
+          cd linux
+          ./package-for-linux.sh aarch64 ""
+        env:
+          PYTHON_VERSION: ${{ env.PYTHON_VERSION }}
+          PYTHON_VERSION_SHORT: ${{ env.PYTHON_VERSION_SHORT }}
+          PYTHON_DIST_RELEASE: ${{ env.PYTHON_DIST_RELEASE }}
+
+      - name: List built archives
+        run: |
+          cd linux
+          ls -lh python-linux-dart-*.tar.gz
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-linux
+          path: linux/python-linux-dart-*.tar.gz
+          if-no-files-found: error
+
+      - name: Deploy to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: linux/python-linux-dart-*.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ======================================
+  #      Build Python for Windows
+  # ======================================
+  build-windows:
+    name: Build Python for Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify Python version
+        run: python --version
+
+      - name: Download Python installer
+        run: |
+          cd windows
+          INSTALLER_URL="https://www.python.org/ftp/python/${{ env.PYTHON_VERSION }}"
+          curl -OL "${INSTALLER_URL}/python-${{ env.PYTHON_VERSION }}-amd64.exe"
+        shell: bash
+
+      - name: Install Python
+        run: |
+          cd windows
+          Start-Process -Wait -FilePath "python-${{ env.PYTHON_VERSION }}-amd64.exe" `
+            -ArgumentList "/quiet", "InstallAllUsers=1", "PrependPath=1", `
+            "Include_test=0", "TargetDir=C:\python314-dist"
+        shell: powershell
+
+      - name: Verify installation and compile bytecode
+        run: |
+          dir C:\python314-dist
+          C:\python314-dist\python.exe --version
+          C:\python314-dist\python.exe -m compileall -b C:\python314-dist\Lib
+        shell: cmd
+
+      - name: Create archive
+        run: |
+          cd windows
+          7z a -xr@exclude.txt python-windows-for-dart-${{ env.PYTHON_VERSION_SHORT }}.zip C:\python314-dist\*
+        shell: cmd
+
+      - name: Upload Windows artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-windows
+          path: windows/python-windows-for-dart-*.zip
+          if-no-files-found: error
+
+      - name: Deploy to GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: windows/python-windows-for-dart-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
