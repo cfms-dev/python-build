@@ -241,9 +241,9 @@ jobs:
 
       - name: Verify installation and compile bytecode
         run: |
-          dir C:\python314-dist
-          C:\python314-dist\python.exe --version
-          C:\python314-dist\python.exe -m compileall -b C:\python314-dist\Lib
+          dir C:\hostedtoolcache\windows\Python\3.14.0\x64
+          C:\hostedtoolcache\windows\Python\3.14.0\x64\python.exe --version
+          C:\hostedtoolcache\windows\Python\3.14.0\x64\python.exe -m compileall -b C:\python314-dist\Lib
         shell: cmd
 
       - name: Create archive
