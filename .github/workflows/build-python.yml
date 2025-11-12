@@ -236,20 +236,20 @@ jobs:
           cd windows
           Start-Process -Wait -FilePath "python-${{ env.PYTHON_VERSION }}-amd64.exe" `
             -ArgumentList "/quiet", "InstallAllUsers=1", "PrependPath=1", `
-            "Include_test=0", "TargetDir=C:\python314-dist"
+            "Include_test=0", "TargetDir=C:\hostedtoolcache\windows\Python\3.14.0\x64"
         shell: powershell
 
       - name: Verify installation and compile bytecode
         run: |
           dir C:\hostedtoolcache\windows\Python\3.14.0\x64
           C:\hostedtoolcache\windows\Python\3.14.0\x64\python.exe --version
-          C:\hostedtoolcache\windows\Python\3.14.0\x64\python.exe -m compileall -b C:\python314-dist\Lib
+          C:\hostedtoolcache\windows\Python\3.14.0\x64\python.exe -m compileall -b C:\hostedtoolcache\windows\Python\3.14.0\x64\Lib
         shell: cmd
 
       - name: Create archive
         run: |
           cd windows
-          7z a -xr@exclude.txt python-windows-for-dart-${{ env.PYTHON_VERSION_SHORT }}.zip C:\python314-dist\*
+          7z a -xr@exclude.txt python-windows-for-dart-${{ env.PYTHON_VERSION_SHORT }}.zip C:\hostedtoolcache\windows\Python\3.14.0\x64*
         shell: cmd
 
       - name: Upload Windows artifacts
