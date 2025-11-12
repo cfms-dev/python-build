@@ -250,7 +250,7 @@ jobs:
       - name: Create archive
         run: |
           cd windows
-          7z a -xr@exclude.txt python-windows-for-dart-${{ env.PYTHON_VERSION_SHORT }}.zip C:\hostedtoolcache\windows\Python\3.14.0\x64*
+          7z a -xr@exclude.txt python-windows-for-dart-${{ env.PYTHON_VERSION_SHORT }}.zip C:\hostedtoolcache\windows\Python\3.14.0\x64\*
         shell: cmd
 
       - name: Upload Windows artifacts
