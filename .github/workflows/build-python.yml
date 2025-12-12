@@ -14,9 +14,9 @@ on:
   workflow_dispatch:
 
 env:
-  PYTHON_VERSION: 3.14.0
+  PYTHON_VERSION: 3.14.2
   PYTHON_VERSION_SHORT: 3.14
-  PYTHON_DIST_RELEASE: 20251007
+  PYTHON_DIST_RELEASE: 20251209
 
 jobs:
   # ======================================
@@ -37,7 +37,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: ${{ env.PYTHON_VERSION_SHORT }}
 
       - name: Verify Python version
         run: python --version
@@ -51,7 +51,7 @@ jobs:
         run: |
           cd android
           mkdir -p dist
-          tar -czf dist/python-android-mobile-forge-${{ env.PYTHON_VERSION_SHORT }}.tar.gz install support
+          tar -czf dist/python-android-mobile-forge-${{ env.PYTHON_VERSION }}.tar.gz install support
 
       - name: Package individual ABIs for Flutter
         run: |
@@ -90,7 +90,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: ${{ env.PYTHON_VERSION_SHORT }}
 
       - name: Verify Python version
         run: python --version
@@ -109,7 +109,7 @@ jobs:
       - name: Package iOS for mobile-forge
         run: |
           cd darwin
-          tar -czf dist/python-ios-mobile-forge-${{ env.PYTHON_VERSION_SHORT }}.tar.gz \
+          tar -czf dist/python-ios-mobile-forge-${{ env.PYTHON_VERSION }}.tar.gz \
             -C Python-Apple-support install support
 
       - name: Build Python for macOS
@@ -120,12 +120,12 @@ jobs:
       - name: Package for Dart - iOS
         run: |
           cd darwin
-          ./package-ios-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION_SHORT }}
+          ./package-ios-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION }}
 
       - name: Package for Dart - macOS
         run: |
           cd darwin
-          ./package-macos-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION_SHORT }}
+          ./package-macos-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION }}
 
       - name: Upload Darwin artifacts
         uses: actions/upload-artifact@v4
@@ -158,7 +158,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: ${{ env.PYTHON_VERSION_SHORT }}
 
       - name: Verify Python version
         run: python --version
@@ -220,7 +220,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: ${{ env.PYTHON_VERSION_SHORT }}
 
       - name: Verify Python version
         run: python --version
@@ -237,20 +237,20 @@ jobs:
           cd windows
           Start-Process -Wait -FilePath "python-${{ env.PYTHON_VERSION }}-amd64.exe" `
             -ArgumentList "/quiet", "InstallAllUsers=1", "PrependPath=1", `
-            "Include_test=0", "TargetDir=C:\hostedtoolcache\windows\Python\3.14.0\x64"
+            "Include_test=0", "TargetDir=C:\hostedtoolcache\windows\Python\${{ env.PYTHON_VERSION }}\x64"
         shell: powershell
 
       - name: Verify installation and compile bytecode
         run: |
-          dir C:\hostedtoolcache\windows\Python\3.14.0\x64
-          C:\hostedtoolcache\windows\Python\3.14.0\x64\python.exe --version
-          C:\hostedtoolcache\windows\Python\3.14.0\x64\python.exe -m compileall -b C:\hostedtoolcache\windows\Python\3.14.0\x64\Lib
+          dir C:\hostedtoolcache\windows\Python\${{ env.PYTHON_VERSION }}\x64
+          C:\hostedtoolcache\windows\Python\${{ env.PYTHON_VERSION }}\x64\python.exe --version
+          C:\hostedtoolcache\windows\Python\${{ env.PYTHON_VERSION }}\x64\python.exe -m compileall -b C:\hostedtoolcache\windows\Python\${{ env.PYTHON_VERSION }}\x64\Lib
         shell: cmd
 
       - name: Create archive
         run: |
           cd windows
-          7z a -xr@exclude.txt python-windows-for-dart-${{ env.PYTHON_VERSION_SHORT }}.zip C:\hostedtoolcache\windows\Python\3.14.0\x64\*
+          7z a -xr@exclude.txt python-windows-for-dart-${{ env.PYTHON_VERSION }}.zip C:\hostedtoolcache\windows\Python\${{ env.PYTHON_VERSION }}\x64\*
         shell: cmd
 
       - name: Upload Windows artifacts
