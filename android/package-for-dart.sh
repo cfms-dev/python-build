@@ -65,4 +65,4 @@ done
 rm -rf $build_dir/lib
 
 # final archive
-tar -czf dist/python-android-dart-$python_version_short-$abi.tar.gz -C $build_dir .
+tar -czf dist/python-android-dart-$python_version-$abi.tar.gz -C $build_dir .
