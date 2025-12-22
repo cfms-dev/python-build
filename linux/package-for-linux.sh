@@ -14,4 +14,4 @@ mkdir -p $PYTHON_ARCH/dist
 rsync -av --exclude-from=python-linux-dart.exclude $PYTHON_ARCH/build/python/* $PYTHON_ARCH/dist
 
 # archive
-tar -czf python-linux-dart-$PYTHON_VERSION-$PYTHON_ARCH.tar.gz -C $PYTHON_ARCH/dist .
+tar -czf python-linux-dart-$PYTHON_VERSION_SHORT-$PYTHON_ARCH.tar.gz -C $PYTHON_ARCH/dist .

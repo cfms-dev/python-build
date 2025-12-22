@@ -72,4 +72,4 @@ rm -rf **/__pycache__
 cd -
 
 # final archive
-tar -czf dist/python-ios-dart-$python_version.tar.gz -C $build_dir .
+tar -czf dist/python-ios-dart-$python_version_short.tar.gz -C $build_dir .
