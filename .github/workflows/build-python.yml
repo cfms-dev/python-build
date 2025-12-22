@@ -51,7 +51,7 @@ jobs:
         run: |
           cd android
           mkdir -p dist
-          tar -czf dist/python-android-mobile-forge-${{ env.PYTHON_VERSION }}.tar.gz install support
+          tar -czf dist/python-android-mobile-forge-${{ env.PYTHON_VERSION_SHORT }}.tar.gz install support
 
       - name: Package individual ABIs for Flutter
         run: |
@@ -109,7 +109,7 @@ jobs:
       - name: Package iOS for mobile-forge
         run: |
           cd darwin
-          tar -czf dist/python-ios-mobile-forge-${{ env.PYTHON_VERSION }}.tar.gz \
+          tar -czf dist/python-ios-mobile-forge-${{ env.PYTHON_VERSION_SHORT }}.tar.gz \
             -C Python-Apple-support install support
 
       - name: Build Python for macOS
@@ -120,12 +120,12 @@ jobs:
       - name: Package for Dart - iOS
         run: |
           cd darwin
-          ./package-ios-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION }}
+          ./package-ios-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION_SHORT }}
 
       - name: Package for Dart - macOS
         run: |
           cd darwin
-          ./package-macos-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION }}
+          ./package-macos-for-dart.sh Python-Apple-support ${{ env.PYTHON_VERSION_SHORT }}
 
       - name: Upload Darwin artifacts
         uses: actions/upload-artifact@v4
